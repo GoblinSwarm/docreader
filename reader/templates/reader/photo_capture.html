@@ -1,0 +1,50 @@
+{% extends "reader/base.html" %}
+{% load static %}
+
+{% block title %}Captura de Documento{% endblock %}
+
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center min-vh-100">
+    <div class="camera-frame text-center p-4">
+
+        <h5 class="mb-4">Tomar Foto del Documento</h5>
+
+        <!-- Video en vivo -->
+        <video id="videoElement" width="300" height="200" autoplay class="mb-4"></video>
+
+        <!-- Canvas oculto para capturar la foto -->
+        <canvas id="canvasElement" width="300" height="200" style="display:none;"></canvas>
+
+        <!-- Imagen previa mostrada después de capturar -->
+        <img id="capturedImage" src="" class="image-preview mb-4" style="display:none;"/>
+
+        <!-- Botón para tomar la foto -->
+        <button type="button" class="btn btn-success mb-3" onclick="capturePhoto()">
+            <i class="fa-solid fa-camera"></i> Tomar Foto
+        </button>
+
+        <!-- Formulario para enviar la imagen -->
+        <form method="POST" enctype="multipart/form-data" action="{% url 'upload_image' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <!-- Input oculto donde guardamos la imagen capturada -->
+            <input type="hidden" name="captured_image" id="capturedImageInput">
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fa-solid fa-upload"></i> Enviar Foto
+            </button>
+        </form>
+
+    </div>
+</div>
+
+<script src="{% static 'reader/js/camera.js' %}"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        startCamera('videoElement');
+    });
+</script>
+  
+{% endblock %}

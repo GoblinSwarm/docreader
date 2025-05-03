@@ -1,0 +1,16 @@
+{% extends 'reader/base.html' %}
+{% load static %}
+
+{% block title %}Error{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="alert alert-danger">
+        <h2 class="alert-heading">Error al procesar el documento</h2>
+        <p>{{ error_message }}</p>
+        <hr>
+        <p class="mb-0">Por favor, intente nuevamente o verifique la calidad de la imagen.</p>
+    </div>
+    <a href="{% url 'photo_capture' %}" class="btn btn-primary">Volver a intentar</a>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "reader/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <!-- La Imagen -->
+    <div class="image">
+        <img src="{{ document.image.url }}" alt="Captured Document">
+    </div>
+
+    <!-- Formulario -->
+    <form method="POST" action="{% url 'save_document_data' %}">
+        {% csrf_token %}
+        <input type="hidden" name="document_id" value="{{ document.id }}">
+        <div class="data">
+            <!-- Campos -->
+            <div class="field">
+                <label>Document Type</label>
+                <input type="text" name="document_type" value="{{ data.document_type }}" readonly>
+            </div>
+            <div class="field">
+                <label>Document Number</label>
+                <input type="text" name="document_number" value="{{ data.document_number }}" readonly>
+            </div>
+            <div class="field">
+                <label>First Names</label>
+                <input type="text" name="first_names" value="{{ data.first_names }}" readonly>
+            </div>
+            <div class="field">
+                <label>Last Names</label>
+                <input type="text" name="last_names" value="{{ data.last_names }}" readonly>
+            </div>
+            <div class="field">
+                <label>Birth Date</label>
+                <input type="date" name="birth_date" value="{{ data.birth_date }}" readonly>
+            </div>
+            <div class="field">
+                <label>Nationality</label>
+                <input type="text" name="nationality" value="{{ data.nationality }}" readonly>
+            </div>
+            <div class="field">
+                <label>Birth Place</label>
+                <input type="text" name="birth_place" value="{{ data.birth_place }}" readonly>
+            </div>
+            <div class="field">
+                <label>Expiration Date</label>
+                <input type="date" name="expiration_date" value="{{ data.expiration_date }}" readonly>
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="actions">
+            <button type="submit" name="save">Save</button>
+            <button type="button" onclick="enableEditing()">Edit</button>
+        </div>
+    </form>
+</div>
+
+<script src="{% static 'reader/js/edit_data.js' %}"></script>
+{% endblock %}

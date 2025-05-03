@@ -1,0 +1,7 @@
+{% extends 'reader/base.html' %}
+{% load static %}
+{% block content %}
+    <h1>Document information has been successfully saved!</h1>
+    <p>You can now capture another document if needed.</p>
+    <a href="{% url 'photo_capture' %}">Capture New Document</a>
+{% endblock %}
