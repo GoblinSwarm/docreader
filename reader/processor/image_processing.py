@@ -3,7 +3,7 @@ import numpy as np
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 
-def process(image: np.ndarray):
+def process2(image: np.ndarray):
     """
     Procesa una imagen ya cargada (matriz OpenCV), 
     no recibe path, recibe directamente la imagen.
@@ -23,8 +23,8 @@ def process(image: np.ndarray):
     thresh = cv2.adaptiveThreshold(contrast, 255, 
                                    cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
                                    cv2.THRESH_BINARY, 11, 2)
-
-    return thresh
+    #Aca le mando la imagen en gris solamente para ir probando, lo otro es proceso bilateral y contraste
+    return gray
 
 def process_base64_image(image_data):
     """
@@ -55,3 +55,23 @@ def process_base64_image(image_data):
     # Procesar la imagen con tus filtros
     processed = process(img)
     return processed
+
+def process(image: np.ndarray, scale_factor=3.5):
+    """
+    Procesa una imagen ya cargada (matriz OpenCV),
+    la escala a un tamaño más grande y luego la convierte a escala de grises.
+    Este process es de prueba
+    """
+
+    # Escalar la imagen
+    width = int(image.shape[1] * scale_factor)  # Calculamos el nuevo ancho
+    height = int(image.shape[0] * scale_factor)  # Calculamos la nueva altura
+    new_dim = (width, height)  # Dimensiones finales
+
+    # Redimensionar la imagen
+    scaled_image = cv2.resize(image, new_dim, interpolation=cv2.INTER_LINEAR)
+
+    # Convertir la imagen escalada a escala de grises
+    gray = cv2.cvtColor(scaled_image, cv2.COLOR_BGR2GRAY)
+
+    return gray

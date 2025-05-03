@@ -66,3 +66,27 @@
     border-radius: 5px;
     background: white;
 }
+
+.field {
+    color: #04020a;
+}
+
+.field label {
+    width: 150px; /* Ancho fijo para las etiquetas */
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.field input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Estilo especial para los campos de fecha */
+.field input[type="date"] {
+    padding: 7px; /* Ajuste para que coincida con los text inputs */
+    height: auto; /* Anula el height por defecto */
+}

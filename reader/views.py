@@ -96,39 +96,38 @@ def upload_image(request):
             # Obtener la imagen en base64 desde la solicitud
             image_data = request.POST['captured_image']
             
-            # Paso 1: Procesar la imagen original (esta es la que se mostrará)
-            original_image = image_processing.process_base64_image(image_data)
-            
-            # Convertir la imagen original (de array numpy) a un archivo
-            pil_image = Image.fromarray(original_image)
-            buffer = io.BytesIO()
-            pil_image.save(buffer, format='PNG')
-            image_file = ContentFile(buffer.getvalue(), name='original_image.png')
+            # Paso 1: Guardar la imagen ORIGINAL sin procesar
+            # Convertir base64 a imagen PIL directamente
+            format, imgstr = image_data.split(';base64,') 
+            ext = format.split('/')[-1]
+            image_file = ContentFile(base64.b64decode(imgstr), name=f'original_image.{ext}')
             
             # Guardar la imagen original en la base de datos
             document = DocumentImage.objects.create(image=image_file)
             request.session['document_id'] = document.id
             
-            # Paso 2: Leer con OCR la imagen procesada (imagen modificada para mejorar OCR)
-            processed_image = image_processing.process_base64_image(image_data)  # Usar la versión procesada
+            # Paso 2: Procesar la imagen para OCR
+            processed_image = image_processing.process_base64_image(image_data)
+            
+            # Paso 3: Leer con OCR la imagen procesada
             raw_text = ocr_reader.read(processed_image)
             print(f"Texto OCR: {raw_text}")
             
-            # Paso 3: Limpiar el texto
+            # Paso 4: Limpiar el texto
             cleaned_text = text_cleaner.basic_cleaning(raw_text)
             fully_cleaned_text = text_cleaner.clean(cleaned_text)
             
-            # Paso 4: Corregir los datos
+            # Paso 5: Corregir los datos
             corrector = data_corrector.DataCorrector()
             extracted_data = corrector.correct(fully_cleaned_text)
 
             # Guardar en sesión los datos extraídos
             request.session['extracted_data'] = extracted_data
             
-            # Paso 5: Renderizar la página de edición con la imagen original y los datos extraídos
+            # Paso 6: Renderizar la página de edición con la imagen original y los datos extraídos
             return render(request, 'reader/edit_data.html', {
                 'data': extracted_data,
-                'document': document  # Pasamos el objeto DocumentImage para que se acceda a la imagen
+                'document': document  # Esto contiene la imagen original
             })
             
         except Exception as e:
@@ -136,5 +135,4 @@ def upload_image(request):
             return render(request, 'reader/error.html', {
                 'error_message': f"Error al procesar el documento: {str(e)}"
             }, status=500)
-
     return render(request, 'reader/photo_capture.html')
